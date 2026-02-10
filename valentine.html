@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine?</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: #fff5f7;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .title-font {
+            font-family: 'Pacifico', cursive;
+        }
+
+        #no-button {
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: absolute;
+        }
+
+        .floating-heart {
+            position: absolute;
+            pointer-events: none;
+            animation: float 4s infinite linear;
+            opacity: 0;
+            z-index: 5;
+        }
+
+        .bullet-heart {
+            position: fixed;
+            pointer-events: none;
+            z-index: 100;
+            font-size: 24px;
+            transition: all 0.4s ease-in;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0); opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+
+        .shake {
+            animation: shake 0.5s infinite;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        .celebration-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 200;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #cupid-turret {
+            position: fixed;
+            bottom: -100px;
+            right: 20px;
+            font-size: 80px;
+            transition: bottom 0.5s ease;
+            z-index: 100;
+        }
+
+        #cupid-turret.active {
+            bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="main-card" class="text-center p-8 bg-white rounded-3xl shadow-2xl border-4 border-pink-200 max-w-md w-full mx-4 relative z-10">
+        <div id="image-container" class="mb-6 text-6xl">
+            💝
+        </div>
+        
+        <h1 class="title-font text-4xl text-pink-600 mb-8 leading-relaxed">
+            Will you be my Valentine?
+        </h1>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-6 h-32 relative">
+            <button id="yes-button" 
+                class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-10 rounded-full shadow-lg transform transition-all active:scale-95 z-20">
+                YES!
+            </button>
+
+            <button id="no-button" 
+                class="bg-gray-200 text-gray-600 font-bold py-3 px-10 rounded-full shadow-md z-20">
+                No
+            </button>
+        </div>
+
+        <p id="funny-comment" class="mt-8 text-pink-400 italic min-h-[1.5rem]"></p>
+    </div>
+
+    <!-- Cupid Turret -->
+    <div id="cupid-turret">🏹👼</div>
+
+    <!-- Success Screen -->
+    <div id="celebration" class="celebration-overlay">
+        <h2 class="title-font text-6xl text-pink-600 mb-4 animate-bounce">YAYYY! ❤️</h2>
+        <p class="text-2xl text-pink-400">Target acquired & heart captured!</p>
+        <div class="mt-8 text-8xl">👩‍❤️‍👨</div>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('no-button');
+        const yesBtn = document.getElementById('yes-button');
+        const comment = document.getElementById('funny-comment');
+        const mainCard = document.getElementById('main-card');
+        const celebration = document.getElementById('celebration');
+        const cupid = document.getElementById('cupid-turret');
+        
+        let hoverCount = 0;
+        let scale = 1;
+
+        const insults = [
+            "Nice try!",
+            "Too slow!",
+            "Whoops! Missed me.",
+            "Deploying Love-Defense Systems...",
+            "WARNING: Love Bullets Incoming!",
+            "You have no choice but to say YES!",
+            "Cupid is getting annoyed...",
+            "Resistance is futile ❤️"
+        ];
+
+        // The No Button Escape Logic
+        noBtn.addEventListener('mouseover', (e) => {
+            hoverCount++;
+            
+            // Move button
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = `${x}px`;
+            noBtn.style.top = `${y}px`;
+
+            // Expand Yes button
+            scale += 0.2;
+            yesBtn.style.transform = `scale(${scale})`;
+            
+            // Update Text
+            comment.innerText = insults[Math.floor(Math.random() * insults.length)];
+            
+            // Shake effect
+            mainCard.classList.add('shake');
+            setTimeout(() => mainCard.classList.remove('shake'), 500);
+
+            // Trigger "Shooting" animation after 2-3 attempts
+            if (hoverCount >= 3) {
+                shootLoveBullets(e.clientX, e.clientY);
+            }
+        });
+
+        function shootLoveBullets(targetX, targetY) {
+            cupid.classList.add('active');
+            
+            // Create 5 heart "bullets"
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    const bullet = document.createElement('div');
+                    bullet.innerHTML = '💘';
+                    bullet.className = 'bullet-heart';
+                    
+                    // Start from Cupid's position
+                    const rect = cupid.getBoundingClientRect();
+                    bullet.style.left = rect.left + 'px';
+                    bullet.style.top = rect.top + 'px';
+                    
+                    document.body.appendChild(bullet);
+
+                    // Animate to where the mouse was/is
+                    setTimeout(() => {
+                        bullet.style.left = targetX + (Math.random() * 40 - 20) + 'px';
+                        bullet.style.top = targetY + (Math.random() * 40 - 20) + 'px';
+                        bullet.style.opacity = '0';
+                        bullet.style.transform = 'scale(2) rotate(45deg)';
+                    }, 50);
+
+                    setTimeout(() => bullet.remove(), 600);
+                }, i * 100);
+            }
+        }
+
+        // The Yes Button Logic
+        yesBtn.addEventListener('click', () => {
+            celebration.style.display = 'flex';
+            startConfetti();
+        });
+
+        function spawnHeart() {
+            const heart = document.createElement('div');
+            heart.innerHTML = ['❤️', '💖', '💝', '✨'][Math.floor(Math.random() * 4)];
+            heart.className = 'floating-heart';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 4000);
+        }
+
+        function startConfetti() {
+            setInterval(spawnHeart, 100);
+        }
+
+        noBtn.onclick = (e) => e.preventDefault();
+    </script>
+</body>
+</html>

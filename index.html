@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Will You Be My Valentine?</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -16,6 +16,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            touch-action: none;
         }
 
         .title-font {
@@ -25,6 +26,7 @@
         #no-button {
             transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: absolute;
+            white-space: nowrap;
         }
 
         .floating-heart {
@@ -53,72 +55,77 @@
         }
 
         @keyframes shake {
-            0% { transform: translate(1px, 1px) rotate(0deg); }
-            10% { transform: translate(-1px, -2px) rotate(-1deg); }
-            20% { transform: translate(-3px, 0px) rotate(1deg); }
-            30% { transform: translate(3px, 2px) rotate(0deg); }
-            100% { transform: translate(1px, -2px) rotate(-1deg); }
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-4px, -4px); }
+            50% { transform: translate(4px, 4px); }
+            75% { transform: translate(-4px, 4px); }
         }
 
         .celebration-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.98);
             z-index: 200;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            text-align: center;
+            padding: 20px;
         }
 
         #cupid-turret {
             position: fixed;
-            bottom: -100px;
+            bottom: -150px;
             right: 20px;
             font-size: 80px;
-            transition: bottom 0.5s ease;
+            transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             z-index: 100;
+            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.1));
         }
 
         #cupid-turret.active {
             bottom: 20px;
         }
+
+        #main-card {
+            transition: transform 0.3s ease;
+        }
     </style>
 </head>
 <body>
 
-    <div id="main-card" class="text-center p-8 bg-white rounded-3xl shadow-2xl border-4 border-pink-200 max-w-md w-full mx-4 relative z-10">
-        <div id="image-container" class="mb-6 text-6xl">
+    <div id="main-card" class="text-center p-8 bg-white rounded-3xl shadow-2xl border-4 border-pink-200 max-w-sm w-full mx-4 relative z-10">
+        <div id="image-container" class="mb-4 text-6xl">
             💝
         </div>
         
-        <h1 class="title-font text-4xl text-pink-600 mb-8 leading-relaxed">
+        <h1 class="title-font text-3xl md:text-4xl text-pink-600 mb-6 leading-tight">
             Will you be my Valentine?
         </h1>
 
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-6 h-32 relative">
+        <div class="flex flex-col items-center justify-center gap-4 h-40 relative">
             <button id="yes-button" 
-                class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-10 rounded-full shadow-lg transform transition-all active:scale-95 z-20">
+                class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-4 px-12 rounded-full shadow-lg transform transition-all active:scale-95 z-20">
                 YES!
             </button>
 
             <button id="no-button" 
-                class="bg-gray-200 text-gray-600 font-bold py-3 px-10 rounded-full shadow-md z-20">
+                class="bg-gray-200 text-gray-600 font-bold py-3 px-8 rounded-full shadow-md z-20">
                 No
             </button>
         </div>
 
-        <p id="funny-comment" class="mt-8 text-pink-400 italic min-h-[1.5rem]"></p>
+        <p id="funny-comment" class="mt-6 text-pink-400 italic min-h-[2.5rem] font-semibold text-sm md:text-base"></p>
     </div>
 
-    <!-- Cupid Turret -->
     <div id="cupid-turret">🏹👼</div>
 
-    <!-- Success Screen -->
     <div id="celebration" class="celebration-overlay">
-        <h2 class="title-font text-6xl text-pink-600 mb-4 animate-bounce">YAYYY! ❤️</h2>
-        <p class="text-2xl text-pink-400">Target acquired & heart captured!</p>
+        <h2 class="title-font text-5xl md:text-7xl text-pink-600 mb-4 animate-bounce">YAYYY! ❤️</h2>
+        <p class="text-xl md:text-2xl text-pink-400 font-bold px-4">Target acquired & heart captured forever!</p>
         <div class="mt-8 text-8xl">👩‍❤️‍👨</div>
+        <p class="mt-6 text-gray-500 italic">Cupid's aim is perfect, just like us.</p>
     </div>
 
     <script>
@@ -133,93 +140,96 @@
         let scale = 1;
 
         const insults = [
-            "Nice try!",
-            "Too slow!",
-            "Whoops! Missed me.",
-            "Deploying Love-Defense Systems...",
-            "WARNING: Love Bullets Incoming!",
-            "You have no choice but to say YES!",
-            "Cupid is getting annoyed...",
-            "Resistance is futile ❤️"
+            "Nice try, slow poke! 🏃‍♀️",
+            "Too slow! Try harder! 😂",
+            "Error 404: 'No' is not an option.",
+            "Deploying Love Defense Systems... 🛡️",
+            "Cupid's ammo is locking on! 💘",
+            "Give up yet? Just click YES! 🥰",
+            "Resistance is futile, my love! ❤️",
+            "Warning: Heart-seeking missiles loaded!",
+            "I can do this all day! 💅",
+            "Look at how big the YES is getting!"
         ];
 
-        // The No Button Escape Logic
-        noBtn.addEventListener('mouseover', (e) => {
+        function moveNoButton(e) {
             hoverCount++;
             
-            // Move button
-            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            const padding = 60;
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - (padding * 2)) + padding;
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - (padding * 2)) + padding;
             
             noBtn.style.position = 'fixed';
             noBtn.style.left = `${x}px`;
             noBtn.style.top = `${y}px`;
 
-            // Expand Yes button
-            scale += 0.2;
+            scale += 0.3;
             yesBtn.style.transform = `scale(${scale})`;
             
-            // Update Text
             comment.innerText = insults[Math.floor(Math.random() * insults.length)];
             
-            // Shake effect
             mainCard.classList.add('shake');
             setTimeout(() => mainCard.classList.remove('shake'), 500);
 
-            // Trigger "Shooting" animation after 2-3 attempts
             if (hoverCount >= 3) {
-                shootLoveBullets(e.clientX, e.clientY);
+                const clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
+                const clientY = e.clientY || (e.touches ? e.touches[0].clientY : 0);
+                shootLoveBullets(clientX, clientY);
             }
+        }
+
+        noBtn.addEventListener('mouseover', moveNoButton);
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            moveNoButton(e);
         });
 
         function shootLoveBullets(targetX, targetY) {
+            if(!targetX || !targetY) return;
             cupid.classList.add('active');
             
-            // Create 5 heart "bullets"
-            for (let i = 0; i < 5; i++) {
+            for (let i = 0; i < 6; i++) {
                 setTimeout(() => {
                     const bullet = document.createElement('div');
                     bullet.innerHTML = '💘';
                     bullet.className = 'bullet-heart';
-                    
-                    // Start from Cupid's position
                     const rect = cupid.getBoundingClientRect();
-                    bullet.style.left = rect.left + 'px';
+                    bullet.style.left = (rect.left + rect.width / 2) + 'px';
                     bullet.style.top = rect.top + 'px';
-                    
                     document.body.appendChild(bullet);
 
-                    // Animate to where the mouse was/is
                     setTimeout(() => {
-                        bullet.style.left = targetX + (Math.random() * 40 - 20) + 'px';
-                        bullet.style.top = targetY + (Math.random() * 40 - 20) + 'px';
+                        bullet.style.left = targetX + (Math.random() * 80 - 40) + 'px';
+                        bullet.style.top = targetY + (Math.random() * 80 - 40) + 'px';
                         bullet.style.opacity = '0';
-                        bullet.style.transform = 'scale(2) rotate(45deg)';
+                        bullet.style.transform = `scale(3) rotate(${Math.random() * 360}deg)`;
                     }, 50);
 
-                    setTimeout(() => bullet.remove(), 600);
+                    setTimeout(() => bullet.remove(), 700);
                 }, i * 100);
             }
         }
 
-        // The Yes Button Logic
         yesBtn.addEventListener('click', () => {
+            noBtn.style.display = 'none';
+            cupid.style.display = 'none';
             celebration.style.display = 'flex';
-            startConfetti();
+            
+            for(let i=0; i<100; i++) {
+                setTimeout(spawnHeart, i * 50);
+            }
+            setInterval(spawnHeart, 200);
         });
 
         function spawnHeart() {
             const heart = document.createElement('div');
-            heart.innerHTML = ['❤️', '💖', '💝', '✨'][Math.floor(Math.random() * 4)];
+            const icons = ['❤️', '💖', '💝', '✨', '🌸', '💘'];
+            heart.innerHTML = icons[Math.floor(Math.random() * icons.length)];
             heart.className = 'floating-heart';
             heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
+            heart.style.fontSize = (Math.random() * 30 + 20) + 'px';
             document.body.appendChild(heart);
             setTimeout(() => heart.remove(), 4000);
-        }
-
-        function startConfetti() {
-            setInterval(spawnHeart, 100);
         }
 
         noBtn.onclick = (e) => e.preventDefault();
